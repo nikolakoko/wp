@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Locations</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Capacity</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="location : ${locations}">
+        <td th:text="${location.name}"></td>
+        <td th:text="${location.address}"></td>
+        <td th:text="${location.capacity}"></td>
+        <td th:text="${location.description}"></td>
+        <td><a th:href="@{'/locations/delete/' + ${location.id}}">Delete</a></td>
+    </tr>
+    </tbody>
+</table>
+<form th:action="@{/locations/add-form}" th:method="GET" style="display:inline;">
+    <button type="submit">Add Location</button>
+</form>
+</body>
+</html>
