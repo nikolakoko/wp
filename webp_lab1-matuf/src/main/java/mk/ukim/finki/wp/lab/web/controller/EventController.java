@@ -4,6 +4,7 @@ import mk.ukim.finki.wp.lab.model.Event;
 import mk.ukim.finki.wp.lab.model.Location;
 import mk.ukim.finki.wp.lab.service.EventService;
 import mk.ukim.finki.wp.lab.service.LocationService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ public class EventController {
     }
 
     @GetMapping("/add-form")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getAddEventPage(Model model) {
         List<Location> locations = this.locationService.findAll();
         model.addAttribute("locations", locations);
@@ -47,12 +49,14 @@ public class EventController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public String saveEvent(@RequestParam String name, @RequestParam String description, @RequestParam Double popularityScore, @RequestParam Long locationId) {
         eventService.save(name, description, popularityScore, locationId);
         return "redirect:/events";
     }
 
     @GetMapping("/edit-form/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getEditEventForm(@PathVariable Long id, Model model) {
         if (eventService.findById(id).isPresent()) {
             Event event = eventService.findById(id).get();
@@ -65,6 +69,7 @@ public class EventController {
     }
 
     @PostMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String editEvent(@PathVariable Long id,
                             @RequestParam String name, @RequestParam String description, @RequestParam Double popularityScore, @RequestParam Long locationId) {
         eventService.edit(id, name, description, popularityScore, locationId);
@@ -72,6 +77,7 @@ public class EventController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteEvent(@PathVariable Long id) {
         eventService.deleteById(id);
         return "redirect:/events";

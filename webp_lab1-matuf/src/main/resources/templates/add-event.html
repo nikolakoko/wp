@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Add/Edit Event</title>
@@ -9,6 +9,7 @@
     <h1>Add/Edit Event</h1>
 </header>
 <main>
+    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
     <form th:action="${event != null} ? '/events/edit/' + ${event.id} : '/events/add'" th:method="POST">
 
         <label for="name">Event Name:</label>
@@ -29,6 +30,7 @@
 
         <button type="submit" th:text="${event == null} ? 'Add Event' : 'Update Event'">Submit</button>
     </form>
+    </th:block>
 </main>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>Event List</title>
@@ -7,6 +7,19 @@
 <body>
 <header>
     <h1>Events List</h1>
+
+    <div>
+        <th:block sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" th:method="POST">
+                <button type="submit">Logout</button>
+            </form>
+        </th:block>
+        <th:block sec:authorize="isAnonymous()">
+            <form th:action="@{/login}" th:method="GET">
+                <button type="submit">Login</button>
+            </form>
+        </th:block>
+    </div>
 </header>
 <main>
     <form th:action="@{/events}" th:method="POST">
@@ -21,9 +34,11 @@
     <div th:if="${hasError}">
         <p th:text="${error}"></p>
     </div>
+    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
     <form th:action="@{/events/add-form}" th:method="GET" style="display:inline;">
         <button type="submit">Add Event</button>
     </form>
+    </th:block>
     <form th:method="POST" th:action="@{/event-booking}">
         <table>
             <thead>
@@ -45,8 +60,12 @@
                 <td th:text="${event.description}"></td>
                 <td th:text="${event.popularityScore}"></td>
                 <td th:text="${event.location.name}"></td>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                 <td><a th:href="@{'/events/edit-form/' + ${event.id}}">Edit</a></td>
+                </th:block>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                 <td><a th:href="@{'/events/delete/' + ${event.id}}">Delete</a></td>
+                </th:block>
                 <!--                <td>-->
                 <!--                    <form th:action="@{'/events/edit-form/' + ${event.id}}" th:method="GET" style="display:inline;">-->
                 <!--                        <button type="submit">Edit</button>-->
