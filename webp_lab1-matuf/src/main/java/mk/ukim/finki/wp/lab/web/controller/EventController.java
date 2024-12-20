@@ -56,7 +56,7 @@ public class EventController {
     }
 
     @GetMapping("/edit-form/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public String getEditEventForm(@PathVariable Long id, Model model) {
         if (eventService.findById(id).isPresent()) {
             Event event = eventService.findById(id).get();
@@ -69,7 +69,7 @@ public class EventController {
     }
 
     @PostMapping("/edit/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public String editEvent(@PathVariable Long id,
                             @RequestParam String name, @RequestParam String description, @RequestParam Double popularityScore, @RequestParam Long locationId) {
         eventService.edit(id, name, description, popularityScore, locationId);
@@ -77,7 +77,7 @@ public class EventController {
     }
 
     @GetMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public String deleteEvent(@PathVariable Long id) {
         eventService.deleteById(id);
         return "redirect:/events";

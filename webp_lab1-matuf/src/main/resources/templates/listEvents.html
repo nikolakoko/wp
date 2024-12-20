@@ -60,10 +60,10 @@
                 <td th:text="${event.description}"></td>
                 <td th:text="${event.popularityScore}"></td>
                 <td th:text="${event.location.name}"></td>
-                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')">
                 <td><a th:href="@{'/events/edit-form/' + ${event.id}}">Edit</a></td>
                 </th:block>
-                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')">
                 <td><a th:href="@{'/events/delete/' + ${event.id}}">Delete</a></td>
                 </th:block>
                 <!--                <td>-->

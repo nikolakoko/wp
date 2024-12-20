@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,8 +29,11 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
+                .headers((headers) -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                )
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/events", "/assets/**", "/h2/**")
+                        .requestMatchers("/", "/assets/**", "/h2/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
@@ -43,7 +47,7 @@ public class WebSecurityConfig {
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/events")
+                        .logoutSuccessUrl("/login")
                 );
 
         return http.build();
@@ -56,7 +60,17 @@ public class WebSecurityConfig {
                 .password(passwordEncoder.encode("admin"))
                 .roles("ADMIN")
                 .build();
+        UserDetails moderator = User.builder()
+                .username("mod")
+                .password(passwordEncoder.encode("mod"))
+                .roles("MODERATOR")
+                .build();
+        UserDetails user = User.builder()
+                .username("user")
+                .password(passwordEncoder.encode("user"))
+                .roles("USER")
+                .build();
 
-        return new InMemoryUserDetailsManager(admin);
+        return new InMemoryUserDetailsManager(admin, moderator, user);
     }
 }
